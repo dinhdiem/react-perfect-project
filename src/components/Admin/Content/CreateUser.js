@@ -2,19 +2,34 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FcPlus } from "react-icons/fc";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const CreateUser = () => {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const [name, setName] = useState("");
+const CreateUser = ({ show, setShow }) => {
+  const [username, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [img, setImg] = useState("");
   const [role, setRole] = useState("USER");
   const [preview, setPreview] = useState("");
+
+  const handleClose = () => {
+    setShow(false);
+    setEmail("");
+    setName("");
+    setPassword("");
+    setRole("USER");
+    setPreview("");
+    setImg("");
+  };
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
   const handleUploadImage = (e) => {
     if (e.target && e.target.files[0] && e.target.files) {
@@ -25,12 +40,42 @@ const CreateUser = () => {
     }
   };
 
+  const handleSubmitCreateUser = async () => {
+    const isValiEmail = validateEmail(email);
+
+    if (!isValiEmail) {
+      toast.warning("Email is Invalid");
+      return;
+    }
+
+    if (!password) {
+      toast.warning("Invalid password");
+      return;
+    }
+    const data = new FormData();
+    data.append("email", email);
+    data.append("password", password);
+    data.append("username", username);
+    data.append("role", role);
+    data.append("userImage", img);
+
+    let res = await axios.post(
+      `http://localhost:8081/api/v1/participant`,
+      data
+    );
+
+    if (res.data && res.data.EC === 0) {
+      toast.success(res.data.EC);
+      handleClose();
+    }
+
+    if (res.data && res.data.EM !== 0) {
+      toast.error(res.data.EM);
+    }
+  };
+
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Launch demo modal
-      </Button>
-
       <Modal
         show={show}
         onHide={handleClose}
@@ -58,7 +103,7 @@ const CreateUser = () => {
                 type="text"
                 className="form-control"
                 placeholder=""
-                value={name}
+                value={username}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -76,6 +121,7 @@ const CreateUser = () => {
               <select
                 className="form-select"
                 onChange={(e) => setRole(e.target.value)}
+                value={role}
               >
                 <option selected value="USER">
                   USER
@@ -107,7 +153,7 @@ const CreateUser = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleSubmitCreateUser}>
             Save
           </Button>
         </Modal.Footer>

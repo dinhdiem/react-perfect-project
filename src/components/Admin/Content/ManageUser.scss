@@ -1,3 +1,17 @@
+.manage-user-container {
+  margin: 10px;
+  .title {
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 25px;
+  }
+  .user-content {
+    .table {
+      margin-top: 10px;
+    }
+  }
+}
+
 .create-user {
   .img-preview {
     border: 1px dashed #ccc;

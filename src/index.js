@@ -11,6 +11,8 @@ import User from "./components/User/User";
 import Home from "./components/HomePage/Home";
 import Dashboard from "./components/Admin/Content/Dashboard";
 import ManagerUser from "./components/Admin/Content/ManagerUser";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -27,6 +29,16 @@ root.render(
         </Route>
       </Routes>
     </BrowserRouter>
+    <ToastContainer
+      position="bottom-right"
+      autoClose={3000}
+      closeOnClick
+      draggable
+      pauseOnHover
+      rtl={false}
+      hideProgressBar={false}
+      newestOnTop={false}
+    />
   </Provider>
 );
 
