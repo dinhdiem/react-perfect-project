@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FcPlus } from "react-icons/fc";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { createNewUser } from "../../../services/apiService";
 
 const CreateUser = ({ show, setShow }) => {
   const [username, setName] = useState("");
@@ -52,25 +52,16 @@ const CreateUser = ({ show, setShow }) => {
       toast.warning("Invalid password");
       return;
     }
-    const data = new FormData();
-    data.append("email", email);
-    data.append("password", password);
-    data.append("username", username);
-    data.append("role", role);
-    data.append("userImage", img);
 
-    let res = await axios.post(
-      `http://localhost:8081/api/v1/participant`,
-      data
-    );
+    let data = await createNewUser(email, password, username, role, img);
 
-    if (res.data && res.data.EC === 0) {
-      toast.success(res.data.EC);
+    if (data && data.EC === 0) {
+      toast.success(data.EM);
       handleClose();
     }
 
-    if (res.data && res.data.EM !== 0) {
-      toast.error(res.data.EM);
+    if (data && data.EC !== 0) {
+      toast.error(data.EM);
     }
   };
 
