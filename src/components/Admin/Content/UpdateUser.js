@@ -1,17 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FcPlus } from "react-icons/fc";
 import { toast } from "react-toastify";
-import { createNewUser } from "../../../services/apiService";
+import { pushUpdateUser } from "../../../services/apiService";
+import _ from "lodash";
 
-const CreateUser = ({ show, setShow, getlistUsers }) => {
+const UpdateUser = ({
+  show,
+  setShow,
+  getlistUsers,
+  dataUpdate,
+  resetDataUpdate,
+}) => {
   const [username, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [img, setImg] = useState("");
   const [role, setRole] = useState("USER");
   const [preview, setPreview] = useState("");
+
+  useEffect(() => {
+    if (!_.isEmpty(dataUpdate)) {
+      setEmail(dataUpdate.email);
+      setName(dataUpdate.username);
+      setRole(dataUpdate.role);
+      if (dataUpdate.image) {
+        setPreview(`data:/image/jpeg;base64,${dataUpdate.image}`);
+      }
+      setImg("");
+    }
+  }, [dataUpdate]);
 
   const handleClose = () => {
     setShow(false);
@@ -21,6 +40,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
     setRole("USER");
     setPreview("");
     setImg("");
+    resetDataUpdate();
   };
 
   const validateEmail = (email) => {
@@ -48,12 +68,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
       return;
     }
 
-    if (!password) {
-      toast.warning("Invalid password");
-      return;
-    }
-
-    let data = await createNewUser(email, password, username, role, img);
+    let data = await pushUpdateUser(dataUpdate.id, username, role, img);
 
     if (data && data.EC === 0) {
       toast.success(data.EM);
@@ -76,7 +91,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
         className="create-user"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add new User</Modal.Title>
+          <Modal.Title>Update a userr</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form className="row g-3">
@@ -85,6 +100,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
               <input
                 type="email"
                 className="form-control"
+                disabled
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -105,6 +121,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
                 type="password"
                 className="form-control"
                 value={password}
+                disabled
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
@@ -154,4 +171,4 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
   );
 };
 
-export default CreateUser;
+export default UpdateUser;

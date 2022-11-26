@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FcPlus } from "react-icons/fc";
-import { toast } from "react-toastify";
-import { createNewUser } from "../../../services/apiService";
+import _ from "lodash";
 
-const CreateUser = ({ show, setShow, getlistUsers }) => {
+const ViewUserInfo = ({ show, setShow, dataUpdate, resetDataUpdate }) => {
   const [username, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -13,22 +12,21 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
   const [role, setRole] = useState("USER");
   const [preview, setPreview] = useState("");
 
+  useEffect(() => {
+    if (!_.isEmpty(dataUpdate)) {
+      setEmail(dataUpdate.email);
+      setName(dataUpdate.username);
+      setRole(dataUpdate.role);
+      if (dataUpdate.image) {
+        setPreview(`data:/image/jpeg;base64,${dataUpdate.image}`);
+      }
+      setImg("");
+    }
+  }, [dataUpdate]);
+
   const handleClose = () => {
     setShow(false);
-    setEmail("");
-    setName("");
-    setPassword("");
-    setRole("USER");
-    setPreview("");
-    setImg("");
-  };
-
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
+    resetDataUpdate();
   };
 
   const handleUploadImage = (e) => {
@@ -37,32 +35,6 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
       setImg(e.target.files[0]);
     } else {
       setPreview("");
-    }
-  };
-
-  const handleSubmitCreateUser = async () => {
-    const isValiEmail = validateEmail(email);
-
-    if (!isValiEmail) {
-      toast.warning("Email is Invalid");
-      return;
-    }
-
-    if (!password) {
-      toast.warning("Invalid password");
-      return;
-    }
-
-    let data = await createNewUser(email, password, username, role, img);
-
-    if (data && data.EC === 0) {
-      toast.success(data.EM);
-      handleClose();
-      await getlistUsers();
-    }
-
-    if (data && data.EC !== 0) {
-      toast.error(data.EM);
     }
   };
 
@@ -76,7 +48,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
         className="create-user"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add new User</Modal.Title>
+          <Modal.Title>Info User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form className="row g-3">
@@ -85,6 +57,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
               <input
                 type="email"
                 className="form-control"
+                disabled
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -92,6 +65,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
             <div className="col-md-6">
               <label className="form-label">UserName</label>
               <input
+                disabled
                 type="text"
                 className="form-control"
                 placeholder=""
@@ -105,12 +79,14 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
                 type="password"
                 className="form-control"
                 value={password}
+                disabled
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="col-md-6">
               <label className="form-label">Role</label>
               <select
+                disabled
                 className="form-select"
                 onChange={(e) => setRole(e.target.value)}
                 value={role}
@@ -126,6 +102,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
                 <FcPlus /> Upload file
               </label>
               <input
+                disabled
                 type="file"
                 hidden
                 id="labelUpload"
@@ -145,13 +122,10 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSubmitCreateUser}>
-            Save
-          </Button>
         </Modal.Footer>
       </Modal>
     </>
   );
 };
 
-export default CreateUser;
+export default ViewUserInfo;
