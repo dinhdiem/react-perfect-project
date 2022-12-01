@@ -9,6 +9,8 @@ const ModalDeleteUser = ({
   setShow,
   dataDelete,
   getlistUsers,
+  setCurrentPage,
+  currentPage,
 }) => {
   const handleClose = () => {
     setShow(false);
@@ -20,7 +22,8 @@ const ModalDeleteUser = ({
     if (data && data.EC === 0) {
       toast.success(data.EM);
       handleClose();
-      await getlistUsers();
+      setCurrentPage(1);
+      await getlistUsers(1);
     }
 
     if (data && data.EC !== 0) {

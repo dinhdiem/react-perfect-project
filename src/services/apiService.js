@@ -29,4 +29,24 @@ const pushUpdateUser = (id, username, role, img) => {
   return axios.put(`/api/v1/participant`, data);
 };
 
-export { createNewUser, getAllUser, pushUpdateUser, deleteUser };
+const getUserPaginate = (page, limit) => {
+  return axios.get(`/api/v1/participant?page=${page}&limit=${limit}`);
+};
+
+const login = (email, password) => {
+  return axios.post(`/api/v1/login`, { email, password });
+};
+
+const register = (email, username, password) => {
+  return axios.post(`/api/v1/register`, { email, username, password });
+};
+
+export {
+  createNewUser,
+  getAllUser,
+  pushUpdateUser,
+  deleteUser,
+  getUserPaginate,
+  login,
+  register,
+};

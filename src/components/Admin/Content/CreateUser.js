@@ -5,7 +5,7 @@ import { FcPlus } from "react-icons/fc";
 import { toast } from "react-toastify";
 import { createNewUser } from "../../../services/apiService";
 
-const CreateUser = ({ show, setShow, getlistUsers }) => {
+const CreateUser = ({ show, setShow, getlistUsers, setCurrentPage }) => {
   const [username, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -58,7 +58,8 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
     if (data && data.EC === 0) {
       toast.success(data.EM);
       handleClose();
-      await getlistUsers();
+      setCurrentPage(1);
+      await getlistUsers(1);
     }
 
     if (data && data.EC !== 0) {
@@ -83,6 +84,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
             <div className="col-md-6">
               <label className="form-label">Email</label>
               <input
+                autoComplete="off"
                 type="email"
                 className="form-control"
                 value={email}
@@ -92,6 +94,7 @@ const CreateUser = ({ show, setShow, getlistUsers }) => {
             <div className="col-md-6">
               <label className="form-label">UserName</label>
               <input
+                autoComplete="off"
                 type="text"
                 className="form-control"
                 placeholder=""

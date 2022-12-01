@@ -13,6 +13,8 @@ import Dashboard from "./components/Admin/Content/Dashboard";
 import ManagerUser from "./components/Admin/Content/ManagerUser";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import Login from "./components/Admin/Auth/Login";
+import Register from "./components/Admin/Auth/Register";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -27,10 +29,12 @@ root.render(
           <Route index element={<Dashboard />} />
           <Route path="manage-users" element={<ManagerUser />} />
         </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
     <ToastContainer
-      position="bottom-right"
+      position="top-right"
       autoClose={3000}
       closeOnClick
       draggable

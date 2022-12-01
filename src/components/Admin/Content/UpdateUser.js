@@ -12,6 +12,7 @@ const UpdateUser = ({
   getlistUsers,
   dataUpdate,
   resetDataUpdate,
+  currentPage,
 }) => {
   const [username, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -73,7 +74,7 @@ const UpdateUser = ({
     if (data && data.EC === 0) {
       toast.success(data.EM);
       handleClose();
-      await getlistUsers();
+      await getlistUsers(currentPage);
     }
 
     if (data && data.EC !== 0) {

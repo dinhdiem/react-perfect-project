@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import CreateUser from "./CreateUser";
 import "./ManageUser.scss";
 import { FcPlus } from "react-icons/fc";
-import TableUser from "./TableUser";
-import { getAllUser } from "../../../services/apiService";
+import { getUserPaginate } from "../../../services/apiService";
 import UpdateUser from "./UpdateUser";
 import ViewUserInfo from "./ViewUserInfo";
 import ModalDeleteUser from "./ModalDeleteUser";
+import TablePaginate from "./TablePanigane";
 
 const ManagerUser = () => {
   const [show, setShow] = useState(false);
@@ -15,15 +15,20 @@ const ManagerUser = () => {
   const [listUser, setListUser] = useState([]);
   const [dataUpdate, setDataUpdate] = useState({});
   const [showModalDelete, setShowModalDelete] = useState(false);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const LIMIT_RECORD = 3;
 
   useEffect(() => {
-    getlistUsers();
+    getUserWithPaginate(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getlistUsers = async () => {
-    const res = await getAllUser();
+  const getUserWithPaginate = async (page) => {
+    const res = await getUserPaginate(page, LIMIT_RECORD);
     if (res.EC === 0) {
-      setListUser(res.DT);
+      setListUser(res.DT.users);
+      setPageCount(res.DT.totalPages);
     }
   };
 
@@ -56,20 +61,30 @@ const ManagerUser = () => {
           </button>
         </div>
         <div className="table">
-          <TableUser
+          <TablePaginate
             listUser={listUser}
             handleClickUpdateButton={handleClickUpdateButton}
             handleClickViewButton={handleClickViewButton}
             handleClickDeleteButton={handleClickDeleteButton}
+            pageCount={pageCount}
+            getUserWithPaginate={getUserWithPaginate}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
           />
         </div>
-        <CreateUser show={show} setShow={setShow} getlistUsers={getlistUsers} />
+        <CreateUser
+          show={show}
+          setShow={setShow}
+          setCurrentPage={setCurrentPage}
+          getlistUsers={getUserWithPaginate}
+        />
         <UpdateUser
           show={showUpdate}
           setShow={setShowUpdate}
           dataUpdate={dataUpdate}
-          getlistUsers={getlistUsers}
+          getlistUsers={getUserWithPaginate}
           resetDataUpdate={resetDataUpdate}
+          currentPage={currentPage}
         />
         <ViewUserInfo
           show={showInfo}
@@ -81,7 +96,9 @@ const ManagerUser = () => {
           showModalDelete={showModalDelete}
           setShow={setShowModalDelete}
           dataDelete={dataUpdate}
-          getlistUsers={getlistUsers}
+          getlistUsers={getUserWithPaginate}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
         />
       </div>
     </div>

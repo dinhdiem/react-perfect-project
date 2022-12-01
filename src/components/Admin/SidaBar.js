@@ -38,7 +38,9 @@ const SidaBar = ({ image, collapsed, toggled, handleToggleSidebar }) => {
           }}
         >
           <DiReact size="3rem" color={"00bfff"} />
-          <span> Bui Tien Dinh</span>
+          <Link to="/" className="text-white text-decoration-none">
+            <span>Bui Tien Dinh</span>
+          </Link>
         </div>
       </SidebarHeader>
 
