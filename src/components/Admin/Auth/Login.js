@@ -32,7 +32,6 @@ const Login = () => {
     }
   };
 
-  console.log(isLoading);
   return (
     <>
       <div className="login-container mt-5">

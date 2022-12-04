@@ -4,19 +4,21 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Admin from "./components/Admin/Admin";
 import User from "./components/User/User";
 import Home from "./components/HomePage/Home";
 import Dashboard from "./components/Admin/Content/Dashboard";
 import ManagerUser from "./components/Admin/Content/ManagerUser";
-import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import Login from "./components/Admin/Auth/Login";
 import Register from "./components/Admin/Auth/Register";
-import "nprogress/nprogress.css";
 import { PersistGate } from "redux-persist/integration/react";
+import ManageQuiz from "./components/Admin/Content/Quiz/ManageQuiz";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import "nprogress/nprogress.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -31,6 +33,7 @@ root.render(
           <Route path="admin" element={<Admin />}>
             <Route index element={<Dashboard />} />
             <Route path="manage-users" element={<ManagerUser />} />
+            <Route path="manage-quiz" element={<ManageQuiz />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
