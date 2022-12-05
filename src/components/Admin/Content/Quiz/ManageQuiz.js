@@ -20,7 +20,6 @@ const ManageQuiz = () => {
 
   const handleImage = (e) => {
     if (e.target && e.target.files[0] && e.target.files) {
-      //   setPreview(URL.createObjectURL(e.target.files[0]));
       setImage(e.target.files[0]);
     }
   };

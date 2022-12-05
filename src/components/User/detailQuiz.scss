@@ -1,0 +1,43 @@
+.q-cotainer {
+  overflow-y: scroll;
+  display: flex;
+  gap: 20px;
+  padding: 50px;
+
+  .left-content {
+    width: 70%;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+
+    .title {
+      font-size: 30px;
+      font-weight: 600;
+    }
+    .q-content {
+      .q-image {
+        display: flex;
+        justify-content: center;
+        img {
+          width: 350px;
+          height: 250px;
+        }
+      }
+      .question {
+        padding-left: 20px;
+        font-size: 20px;
+        font-weight: 500;
+      }
+      .answers {
+        padding-left: 20px;
+        margin-bottom: 30px;
+      }
+    }
+  }
+  .right-content {
+    width: 30%;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+  }
+}

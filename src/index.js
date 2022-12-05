@@ -19,8 +19,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
+import DetailQuiz from "./components/User/detailQuiz";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const NotFound = () => {
+  return (
+    <div className="alert alert-danger mx-5 mt-3">404. Not Found URL !!</div>
+  );
+};
 root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
@@ -30,6 +37,7 @@ root.render(
             <Route index element={<Home />} />
             <Route path="users" element={<User />} />
           </Route>
+          <Route path="/quiz/:id" element={<DetailQuiz />} />
           <Route path="admin" element={<Admin />}>
             <Route index element={<Dashboard />} />
             <Route path="manage-users" element={<ManagerUser />} />
@@ -37,6 +45,7 @@ root.render(
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer

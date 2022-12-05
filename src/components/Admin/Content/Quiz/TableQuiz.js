@@ -14,6 +14,7 @@ const TableQuiz = () => {
   useEffect(() => {
     getAllQuizAdmin();
   }, []);
+
   return (
     <>
       <div>List Quiz:</div>
@@ -46,8 +47,13 @@ const TableQuiz = () => {
                   <td>{item.name}</td>
                   <td>{item.description}</td>
                   <td>{item.difficulty}</td>
-                  <td className="d-flex gap-2 align-items-center">
-                    <button className="btn btn-warning">Edit</button>
+                  <td>
+                    <button
+                      className="btn btn-warning"
+                      style={{ marginRight: "10px" }}
+                    >
+                      Edit
+                    </button>
                     <button className="btn btn-danger">Delete</button>
                   </td>
                 </tr>

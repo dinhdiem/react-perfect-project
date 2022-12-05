@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getQuizbyUser } from "../../services/apiService";
+import "./user.scss";
 
 const User = () => {
   const [allQuiz, setAllQuiz] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllQuizByUser();
@@ -24,11 +27,21 @@ const User = () => {
                 src={`data:image/jpeg;base64,${item.image}`}
                 className="card-img-top"
                 alt="..."
+                height="300px"
               />
               <div className="card-body">
                 <h5 className="card-title">Card title</h5>
                 <p className="card-text">{item.description}</p>
-                <button className="btn btn-primary">Start now</button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    navigate(`/quiz/${item.id}`, {
+                      state: { quizTitle: item.description },
+                    })
+                  }
+                >
+                  Start now
+                </button>
               </div>
             </div>
           );

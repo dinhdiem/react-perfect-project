@@ -62,6 +62,10 @@ const getAllQuizForAdmin = () => {
   return axios.get(`api/v1/quiz/all`);
 };
 
+const getQuizByOne = (id) => {
+  return axios.get(`/api/v1/questions-by-quiz?quizId=${id}`);
+};
+
 export {
   createNewUser,
   getAllUser,
@@ -73,4 +77,5 @@ export {
   getQuizbyUser,
   createQuiz,
   getAllQuizForAdmin,
+  getQuizByOne,
 };

@@ -42,7 +42,6 @@ const Login = () => {
             <input
               type="text"
               className="form-control"
-              id="formGroupExampleInput"
               placeholder="Vui lòng nhập email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
