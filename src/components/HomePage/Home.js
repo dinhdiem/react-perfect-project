@@ -1,11 +1,15 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import VideoHomePage from "../../assets/video-1920.mp4";
 
 const Home = () => {
   const navigate = useNavigate();
   const { isAuthenticate } = useSelector((state) => state.user.account);
+
+  const handleChangeRouter = () => {
+    navigate("/user");
+  };
 
   return (
     <div className="homepage-container">
@@ -21,11 +25,11 @@ const Home = () => {
         </div>
         <div className="title-3">
           {isAuthenticate === false ? (
-            <button onClick={() => navigate("/login")}>
+            <button onClick={() => navigate("login")}>
               Get started - it's free
             </button>
           ) : (
-            <button onClick={() => navigate("/user")}>Starting Quiz</button>
+            <button onClick={handleChangeRouter}>Starting Quiz</button>
           )}
         </div>
       </div>

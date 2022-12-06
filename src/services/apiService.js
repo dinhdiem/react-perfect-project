@@ -41,6 +41,31 @@ const register = (email, username, password) => {
   return axios.post(`/api/v1/register`, { email, username, password });
 };
 
+const getQuizbyUser = () => {
+  return axios.get(`api/v1/quiz-by-participant`);
+};
+
+const createQuiz = (description, name, difficulty, quizImage) => {
+  const data = new FormData();
+
+  console.log(description, name, difficulty, quizImage);
+
+  data.append("description", description);
+  data.append("name", name);
+  data.append("difficulty", difficulty);
+  data.append("quizImage", quizImage);
+
+  return axios.post(`api/v1/quiz`, data);
+};
+
+const getAllQuizForAdmin = () => {
+  return axios.get(`api/v1/quiz/all`);
+};
+
+const getQuizByOne = (id) => {
+  return axios.get(`/api/v1/questions-by-quiz?quizId=${id}`);
+};
+
 export {
   createNewUser,
   getAllUser,
@@ -49,4 +74,8 @@ export {
   getUserPaginate,
   login,
   register,
+  getQuizbyUser,
+  createQuiz,
+  getAllQuizForAdmin,
+  getQuizByOne,
 };
