@@ -76,6 +76,36 @@ const DetailQuiz = () => {
     }
   };
 
+  const handleFinishQuiz = () => {
+    const payload = {
+      quizId: +id,
+      answers: [],
+    };
+
+    const answers = [];
+
+    if (data && data.length > 0) {
+      data.forEach((item) => {
+        let questionID = +item.questionID;
+        let userAnswerId = [];
+
+        item.answers.forEach((item) => {
+          if (item.isChecked) {
+            userAnswerId.push(item.id);
+          }
+        });
+
+        answers.push({
+          questionID,
+          userAnswerId,
+        });
+      });
+    }
+    payload.answers = answers;
+
+    console.log(payload);
+  };
+
   return (
     <div className="q-cotainer">
       <div className="left-content">
@@ -105,7 +135,7 @@ const DetailQuiz = () => {
           </button>
           <button
             className="btn btn-warning"
-            onClick={() => handleSetIndex("next")}
+            onClick={() => handleFinishQuiz()}
           >
             Finish
           </button>
