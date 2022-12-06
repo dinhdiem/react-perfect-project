@@ -48,8 +48,6 @@ const getQuizbyUser = () => {
 const createQuiz = (description, name, difficulty, quizImage) => {
   const data = new FormData();
 
-  console.log(description, name, difficulty, quizImage);
-
   data.append("description", description);
   data.append("name", name);
   data.append("difficulty", difficulty);
@@ -63,7 +61,12 @@ const getAllQuizForAdmin = () => {
 };
 
 const getQuizByOne = (id) => {
-  return axios.get(`/api/v1/questions-by-quiz?quizId=${id}`);
+  return axios.get(`api/v1/questions-by-quiz?quizId=${id}`);
+};
+
+const postSubmitQuiz = (data) => {
+  console.log({ ...data });
+  return axios.post(`api/v1/quiz-submit`, { ...data });
 };
 
 export {
@@ -78,4 +81,5 @@ export {
   createQuiz,
   getAllQuizForAdmin,
   getQuizByOne,
+  postSubmitQuiz,
 };
