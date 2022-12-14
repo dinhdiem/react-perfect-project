@@ -20,6 +20,7 @@ import "react-perfect-scrollbar/dist/css/styles.css";
 import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
 import DetailQuiz from "./components/User/detailQuiz";
+import Questions from "./components/Admin/Content/Question/Questions";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -42,6 +43,7 @@ root.render(
             <Route index element={<Dashboard />} />
             <Route path="manage-users" element={<ManagerUser />} />
             <Route path="manage-quiz" element={<ManageQuiz />} />
+            <Route path="manage-question" element={<Questions />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
