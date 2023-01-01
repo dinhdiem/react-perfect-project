@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import "./question.scss";
 import { IoIosAddCircle, IoIosRemoveCircle } from "react-icons/io";
-import { getAllQuizForAdmin } from "../../../../services/apiService";
+import {
+  getAllQuizForAdmin,
+  postCreateAnswerForQuestion,
+  postCreateQuestionForQuiz,
+} from "../../../../services/apiService";
 import { BiImageAdd } from "react-icons/bi";
 import { v4 as uuid } from "uuid";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
-const Questions = (props) => {
+const Questions = () => {
   const [selectedQuestion, setSelectedQuestion] = useState({});
   const [listQuiz, setListQuiz] = useState([]);
 
@@ -155,8 +160,28 @@ const Questions = (props) => {
     }
   };
 
-  const handleSubmitQuiz = () => {
-    console.log(questions, selectedQuestion);
+  const handleSubmitQuiz = async () => {
+    if (_.isEmpty(selectedQuestion)) {
+      toast.error("Please choose a Quiz!");
+      return;
+    }
+    // submit question
+
+    for (const question of questions) {
+      const q = await postCreateQuestionForQuiz(
+        +selectedQuestion,
+        question.description,
+        question.questionFile
+      );
+
+      for (const answer of question.anwsers) {
+        await postCreateAnswerForQuestion(
+          answer.description,
+          answer.inCorrect,
+          q.DT.id
+        );
+      }
+    }
   };
 
   return (
