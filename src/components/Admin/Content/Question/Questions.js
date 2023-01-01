@@ -13,8 +13,24 @@ import _ from "lodash";
 import { toast } from "react-toastify";
 
 const Questions = () => {
+  const initStateQuestion = [
+    {
+      questionID: uuid(),
+      description: "",
+      questionFile: "",
+      questionName: "",
+      anwsers: [
+        {
+          id: uuid(),
+          description: "",
+          inCorrect: false,
+        },
+      ],
+    },
+  ];
   const [selectedQuestion, setSelectedQuestion] = useState({});
   const [listQuiz, setListQuiz] = useState([]);
+  const [questions, setQuestions] = useState(initStateQuestion);
 
   useEffect(() => {
     getAllQuizByUser();
@@ -31,22 +47,6 @@ const Questions = () => {
     });
     setListQuiz(newData);
   };
-
-  const [questions, setQuestions] = useState([
-    {
-      questionID: uuid(),
-      description: "",
-      questionFile: "",
-      questionName: "",
-      anwsers: [
-        {
-          id: uuid(),
-          description: "",
-          inCorrect: false,
-        },
-      ],
-    },
-  ]);
 
   const handleChange = (e) => {
     setSelectedQuestion(e);
@@ -109,7 +109,7 @@ const Questions = () => {
     }
   };
 
-  const handleChangeQuestionAndAnwsers = (type, e, questionID, answerID) => {
+  const handleChangeQuestionAndAnwsers = (type, e, questionID) => {
     const questionClone = _.cloneDeep(questions);
 
     if (type === "QUESTION") {
@@ -165,11 +165,55 @@ const Questions = () => {
       toast.error("Please choose a Quiz!");
       return;
     }
+
+    // validate question
+
+    let indexQuestion = 0;
+    let isValidQuestion = false;
+    for (let i = 0; i < questions.length; i++) {
+      if (!questions[i].description) {
+        indexQuestion = i;
+        isValidQuestion = true;
+        break;
+      }
+    }
+
+    if (isValidQuestion) {
+      toast.error(`Not errors for question ${indexQuestion + 1}`);
+      return;
+    }
+
+    // validate answers for question
+    let isValidAnswers = false;
+    let indexAnswer = 0;
+    let indexQuestionForAnswer = 0;
+    for (let i = 0; i < questions.length; i++) {
+      for (let j = 0; j < questions[i].anwsers.length; j++) {
+        if (!questions[i].anwsers[j].description) {
+          isValidAnswers = true;
+          indexAnswer = j;
+          break;
+        }
+      }
+      indexQuestionForAnswer = i;
+
+      if (isValidAnswers) break;
+    }
+
+    if (isValidAnswers) {
+      toast.error(
+        `Not errors answer ${
+          indexAnswer + 1
+        } for question ${indexQuestionForAnswer}`
+      );
+      return;
+    }
+
     // submit question
 
     for (const question of questions) {
       const q = await postCreateQuestionForQuiz(
-        +selectedQuestion,
+        +selectedQuestion.value,
         question.description,
         question.questionFile
       );
@@ -182,6 +226,9 @@ const Questions = () => {
         );
       }
     }
+
+    toast.success("Create succes question and answsers");
+    setQuestions(initStateQuestion);
   };
 
   return (
