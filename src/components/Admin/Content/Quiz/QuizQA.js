@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import "./question.scss";
+import "./QuizQA.scss";
 import { IoIosAddCircle, IoIosRemoveCircle } from "react-icons/io";
 import {
   getAllQuizForAdmin,
   postCreateAnswerForQuestion,
   postCreateQuestionForQuiz,
+  getQuizWithQA,
 } from "../../../../services/apiService";
 import { BiImageAdd } from "react-icons/bi";
 import { v4 as uuid } from "uuid";
 import _ from "lodash";
 import { toast } from "react-toastify";
 
-const Questions = () => {
+const QuizQA = () => {
   const initStateQuestion = [
     {
-      questionID: uuid(),
+      id: uuid(),
       description: "",
-      questionFile: "",
-      questionName: "",
-      anwsers: [
+      imageFile: "",
+      imageName: "",
+      answers: [
         {
           id: uuid(),
           description: "",
-          inCorrect: false,
+          isCorrect: false,
         },
       ],
     },
@@ -32,9 +33,47 @@ const Questions = () => {
   const [listQuiz, setListQuiz] = useState([]);
   const [questions, setQuestions] = useState(initStateQuestion);
 
+  function urltoFile(url, filename, mimeType) {
+    return fetch(url)
+      .then(function (res) {
+        return res.arrayBuffer();
+      })
+      .then(function (buf) {
+        return new File([buf], filename, { type: mimeType });
+      });
+  }
+
   useEffect(() => {
     getAllQuizByUser();
   }, []);
+
+  useEffect(() => {
+    if (selectedQuestion.value) {
+      fetchQuizWithQA();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedQuestion]);
+
+  const fetchQuizWithQA = async () => {
+    let res = await getQuizWithQA(selectedQuestion.value);
+
+    if (res && res.EC === 0) {
+      let newQA = [];
+      for (let i = 0; i < res.DT.qa.length; i++) {
+        const q = res.DT.qa[i];
+        if (q.imageFile) {
+          q.imageName = `Question - ${q.id}.png`;
+          q.imageFile = await urltoFile(
+            `data:image/png;base64,${q.imageFile}`,
+            `Question - ${q.id}.png`,
+            "image/png"
+          );
+        }
+        newQA.push(q);
+      }
+      setQuestions(newQA);
+    }
+  };
 
   const getAllQuizByUser = async () => {
     const res = await getAllQuizForAdmin();
@@ -52,18 +91,18 @@ const Questions = () => {
     setSelectedQuestion(e);
   };
 
-  const handleAddAndRemoveItem = (type, questionID) => {
+  const handleAddAndRemoveItem = (type, id) => {
     if (type === "ADD") {
       const newQuestion = {
-        questionID: uuid(),
+        id: uuid(),
         description: "",
-        questionFile: "",
-        questionName: "",
-        anwsers: [
+        imageFile: "",
+        imageName: "",
+        answers: [
           {
             id: uuid(),
             description: "",
-            inCorrect: false,
+            isCorrect: false,
           },
         ],
       };
@@ -71,37 +110,31 @@ const Questions = () => {
     }
     if (type === "REMOVE") {
       const questionClone = _.cloneDeep(questions);
-      const newQuestion = questionClone.filter(
-        (item) => item.questionID !== questionID
-      );
+      const newQuestion = questionClone.filter((item) => item.id !== id);
       setQuestions(newQuestion);
     }
   };
 
-  const handleAddAndRemoveAnwser = (type, questionID, answerID) => {
+  const handleAddAndRemoveAnwser = (type, id, answerID) => {
     const questionClone = _.cloneDeep(questions);
 
     if (type === "ADD") {
       const newArr = {
         id: uuid(),
         description: "",
-        inCorrect: false,
+        isCorrect: false,
       };
-      let index = questionClone.findIndex(
-        (item) => item.questionID === questionID
-      );
+      let index = questionClone.findIndex((item) => item.id === id);
 
-      questionClone[index].anwsers.push(newArr);
+      questionClone[index].answers.push(newArr);
 
       setQuestions(questionClone);
     }
 
     if (type === "REMOVE") {
-      let index = questionClone.findIndex(
-        (item) => item.questionID === questionID
-      );
+      let index = questionClone.findIndex((item) => item.id === id);
 
-      questionClone[index].anwsers = questionClone[index].anwsers.filter(
+      questionClone[index].answers = questionClone[index].answers.filter(
         (item) => item.id !== answerID
       );
 
@@ -109,13 +142,11 @@ const Questions = () => {
     }
   };
 
-  const handleChangeQuestionAndAnwsers = (type, e, questionID) => {
+  const handleChangeQuestionAndAnwsers = (type, e, id) => {
     const questionClone = _.cloneDeep(questions);
 
     if (type === "QUESTION") {
-      const index = questionClone.findIndex(
-        (item) => item.questionID === questionID
-      );
+      const index = questionClone.findIndex((item) => item.id === id);
 
       if (index > -1) {
         questionClone[index].description = e;
@@ -124,29 +155,25 @@ const Questions = () => {
     }
 
     if (type === "UPLOAD") {
-      const index = questionClone.findIndex(
-        (item) => item.questionID === questionID
-      );
+      const index = questionClone.findIndex((item) => item.id === id);
 
-      questionClone[index].questionFile = e.target.files[0];
-      questionClone[index].questionName = e.target.files[0].name;
+      questionClone[index].imageFile = e.target.files[0];
+      questionClone[index].imageName = e.target.files[0].name;
 
       setQuestions(questionClone);
     }
   };
 
-  const handleAnwsersQuestion = (type, questionID, anwserID, value) => {
+  const handleAnwsersQuestion = (type, id, anwserID, value) => {
     const questionClone = _.cloneDeep(questions);
-    const index = questionClone.findIndex(
-      (item) => item.questionID === questionID
-    );
+    const index = questionClone.findIndex((item) => item.id === id);
 
     if (index > -1) {
-      questionClone[index].anwsers = questionClone[index].anwsers.map(
+      questionClone[index].answers = questionClone[index].answers.map(
         (anwser) => {
           if (anwser.id === anwserID) {
             if (type === "CHECKED") {
-              anwser.inCorrect = value;
+              anwser.isCorrect = value;
             }
 
             if (type === "INPUT") {
@@ -188,8 +215,8 @@ const Questions = () => {
     let indexAnswer = 0;
     let indexQuestionForAnswer = 0;
     for (let i = 0; i < questions.length; i++) {
-      for (let j = 0; j < questions[i].anwsers.length; j++) {
-        if (!questions[i].anwsers[j].description) {
+      for (let j = 0; j < questions[i].answers.length; j++) {
+        if (!questions[i].answers[j].description) {
           isValidAnswers = true;
           indexAnswer = j;
           break;
@@ -215,13 +242,13 @@ const Questions = () => {
       const q = await postCreateQuestionForQuiz(
         +selectedQuestion.value,
         question.description,
-        question.questionFile
+        question.imageFile
       );
 
-      for (const answer of question.anwsers) {
+      for (const answer of question.answers) {
         await postCreateAnswerForQuestion(
           answer.description,
-          answer.inCorrect,
+          answer.isCorrect,
           q.DT.id
         );
       }
@@ -233,7 +260,6 @@ const Questions = () => {
 
   return (
     <div className="question-container">
-      <div className="title">Question Description</div>
       <div className="add-new-question">
         <div className="col-6 form-group">
           <label>Select Quiz</label>
@@ -250,10 +276,7 @@ const Questions = () => {
             questions.length > 0 &&
             questions.map((item, index) => {
               return (
-                <div
-                  className="question-list"
-                  key={item.questionID ? item.questionID : item.id}
-                >
+                <div className="question-list" key={item.id}>
                   <div className="questions-content">
                     <div className="form-floating description">
                       <input
@@ -265,30 +288,26 @@ const Questions = () => {
                           handleChangeQuestionAndAnwsers(
                             "QUESTION",
                             e.target.value,
-                            item.questionID
+                            item.id
                           )
                         }
                       />
                       <label>Description {index + 1}</label>
                     </div>
                     <div className="upload">
-                      <label className="label" htmlFor={`${item.questionID}`}>
+                      <label className="label" htmlFor={`${item.id}`}>
                         <BiImageAdd />
                       </label>
                       <input
-                        id={item.questionID}
+                        id={item.id}
                         type="file"
                         hidden
                         onChange={(e) =>
-                          handleChangeQuestionAndAnwsers(
-                            "UPLOAD",
-                            e,
-                            item.questionID
-                          )
+                          handleChangeQuestionAndAnwsers("UPLOAD", e, item.id)
                         }
                       />
                       <span>
-                        {item.questionName
+                        {item.imageName
                           ? "1 file uploaded"
                           : "0 file is uploaded"}
                       </span>
@@ -300,7 +319,7 @@ const Questions = () => {
                       {questions.length > 1 && (
                         <span
                           onClick={() =>
-                            handleAddAndRemoveItem("REMOVE", item.questionID)
+                            handleAddAndRemoveItem("REMOVE", item.id)
                           }
                         >
                           <IoIosRemoveCircle className="trash" />
@@ -308,19 +327,19 @@ const Questions = () => {
                       )}
                     </div>
                   </div>
-                  {item.anwsers &&
-                    item.anwsers?.length > 0 &&
-                    item.anwsers.map((answer, index) => {
+                  {item.answers &&
+                    item.answers.length > 0 &&
+                    item.answers.map((answer, index) => {
                       return (
                         <div className="answers-content" key={answer.id}>
                           <input
-                            checked={answer.inCorrect}
+                            checked={answer.isCorrect}
                             type="checkbox"
                             className="form-check-input"
                             onChange={(e) =>
                               handleAnwsersQuestion(
                                 "CHECKED",
-                                item.questionID,
+                                item.id,
                                 answer.id,
                                 e.target.checked
                               )
@@ -335,7 +354,7 @@ const Questions = () => {
                               onChange={(e) =>
                                 handleAnwsersQuestion(
                                   "INPUT",
-                                  item.questionID,
+                                  item.id,
                                   answer.id,
                                   e.target.value
                                 )
@@ -346,17 +365,17 @@ const Questions = () => {
                           <div className="btn-group">
                             <span
                               onClick={() =>
-                                handleAddAndRemoveAnwser("ADD", item.questionID)
+                                handleAddAndRemoveAnwser("ADD", item.id)
                               }
                             >
                               <IoIosAddCircle className="icons" />
                             </span>
-                            {item.anwsers.length > 1 && (
+                            {item.answers.length > 1 && (
                               <span
                                 onClick={() =>
                                   handleAddAndRemoveAnwser(
                                     "REMOVE",
-                                    item.questionID,
+                                    item.id,
                                     answer.id
                                   )
                                 }
@@ -383,4 +402,4 @@ const Questions = () => {
   );
 };
 
-export default Questions;
+export default QuizQA;
