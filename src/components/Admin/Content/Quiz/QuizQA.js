@@ -4,9 +4,8 @@ import "./QuizQA.scss";
 import { IoIosAddCircle, IoIosRemoveCircle } from "react-icons/io";
 import {
   getAllQuizForAdmin,
-  postCreateAnswerForQuestion,
-  postCreateQuestionForQuiz,
   getQuizWithQA,
+  postUpsertQA,
 } from "../../../../services/apiService";
 import { BiImageAdd } from "react-icons/bi";
 import { v4 as uuid } from "uuid";
@@ -236,27 +235,32 @@ const QuizQA = () => {
       return;
     }
 
-    // submit question
+    let questionClone = _.cloneDeep(questions);
 
-    for (const question of questions) {
-      const q = await postCreateQuestionForQuiz(
-        +selectedQuestion.value,
-        question.description,
-        question.imageFile
-      );
-
-      for (const answer of question.answers) {
-        await postCreateAnswerForQuestion(
-          answer.description,
-          answer.isCorrect,
-          q.DT.id
-        );
+    for (let i = 0; i < questionClone.length; i++) {
+      if (questionClone[i].imageFile) {
+        questionClone[i].imageFile = await toBase64(questionClone[i].imageFile);
       }
     }
 
-    toast.success("Create succes question and answsers");
-    setQuestions(initStateQuestion);
+    let res = await postUpsertQA({
+      quizId: selectedQuestion.value,
+      questions: questionClone,
+    });
+
+    if (res && res.EC === 0) {
+      fetchQuizWithQA();
+      toast.success("Create succes question and answsers");
+    }
   };
+
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
 
   return (
     <div className="question-container">
