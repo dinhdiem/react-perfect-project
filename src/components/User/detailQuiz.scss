@@ -39,5 +39,40 @@
     border: 2px solid #ccc;
     border-radius: 5px;
     padding: 20px;
+    .main-countdown {
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px dotted gray;
+      padding-bottom: 33px;
+      margin-bottom: 20px;
+    }
+    .main-question {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+      align-items: center;
+      .question {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        border: 1px solid rgb(168, 168, 168);
+        cursor: pointer;
+
+        &:hover {
+          color: red;
+        }
+
+        &.selected {
+          background-color: rgb(170, 166, 166);
+        }
+
+        &.clicked {
+          color: red;
+        }
+      }
+    }
   }
 }
