@@ -22,6 +22,7 @@ const RightContent = ({ data, handleFinishQuiz, setIndex }) => {
   };
 
   const handleCickQuestion = (index, question) => {
+    setIndex(index);
     if (refDiv.current) {
       refDiv.current.forEach((item) => {
         if (item.className === "question clicked") {
@@ -35,12 +36,10 @@ const RightContent = ({ data, handleFinishQuiz, setIndex }) => {
         (item) => item.isChecked === true
       );
       if (checkedQuestion) {
-        setIndex(index);
         return;
       }
     }
     refDiv.current[index].className = "question clicked";
-    setIndex(index);
   };
 
   return (

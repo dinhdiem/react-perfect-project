@@ -21,6 +21,7 @@ import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
 import DetailQuiz from "./components/User/detailQuiz";
 import Questions from "./components/Admin/Content/Question/Questions";
+import PrivateRouter from "./routes/PrivateRouter";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -36,10 +37,24 @@ root.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Home />} />
-            <Route path="users" element={<User />} />
+            <Route
+              path="users"
+              element={
+                <PrivateRouter>
+                  <User />
+                </PrivateRouter>
+              }
+            />
           </Route>
           <Route path="/quiz/:id" element={<DetailQuiz />} />
-          <Route path="admin" element={<Admin />}>
+          <Route
+            path="admin"
+            element={
+              <PrivateRouter>
+                <Admin />
+              </PrivateRouter>
+            }
+          >
             <Route index element={<Dashboard />} />
             <Route path="manage-users" element={<ManagerUser />} />
             <Route path="manage-quiz" element={<ManageQuiz />} />
