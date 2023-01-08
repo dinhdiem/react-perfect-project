@@ -48,8 +48,6 @@ const getQuizbyUser = () => {
 const createQuiz = (description, name, difficulty, quizImage) => {
   const data = new FormData();
 
-  console.log(description, name, difficulty, quizImage);
-
   data.append("description", description);
   data.append("name", name);
   data.append("difficulty", difficulty);
@@ -63,7 +61,49 @@ const getAllQuizForAdmin = () => {
 };
 
 const getQuizByOne = (id) => {
-  return axios.get(`/api/v1/questions-by-quiz?quizId=${id}`);
+  return axios.get(`api/v1/questions-by-quiz?quizId=${id}`);
+};
+
+const postSubmitQuiz = (data) => {
+  return axios.post(`api/v1/quiz-submit`, { ...data });
+};
+
+const postCreateQuestionForQuiz = (quiz_id, description, questionImage) => {
+  const data = new FormData();
+
+  data.append("quiz_id", quiz_id);
+  data.append("description", description);
+  data.append("questionImage", questionImage);
+
+  return axios.post(`api/v1/question`, data);
+};
+
+const postCreateAnswerForQuestion = (
+  description,
+  correct_answer,
+  question_id
+) => {
+  return axios.post(`api/v1/answer`, {
+    description,
+    correct_answer,
+    question_id,
+  });
+};
+
+const postAssignQuiz = (quizId, userId) => {
+  return axios.post(`api/v1/quiz-assign-to-user`, { quizId, userId });
+};
+
+const getQuizWithQA = (quizId) => {
+  return axios.get(`api/v1/quiz-with-qa/${quizId}`);
+};
+
+const postUpsertQA = (data) => {
+  return axios.post(`api/v1/quiz-upsert-qa`, { ...data });
+};
+
+const logout = (email, refresh_token) => {
+  return axios.post(`api/v1/logout`, { email, refresh_token });
 };
 
 export {
@@ -78,4 +118,11 @@ export {
   createQuiz,
   getAllQuizForAdmin,
   getQuizByOne,
+  postSubmitQuiz,
+  postCreateQuestionForQuiz,
+  postCreateAnswerForQuestion,
+  postAssignQuiz,
+  getQuizWithQA,
+  postUpsertQA,
+  logout,
 };

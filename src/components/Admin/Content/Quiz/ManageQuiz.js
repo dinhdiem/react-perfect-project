@@ -5,11 +5,13 @@ import { createQuiz } from "../../../../services/apiService";
 import { toast } from "react-toastify";
 import TableQuiz from "./TableQuiz";
 import Accordion from "react-bootstrap/Accordion";
+import QuizQA from "./QuizQA";
+import AssignQuiz from "./AssginQuiz";
 
 const options = [
-  { value: "EASY", label: "Chocolate" },
-  { value: "MEDIUM", label: "Strawberry" },
-  { value: "HOT", label: "Vanilla" },
+  { value: "EASY", label: "EASY" },
+  { value: "MEDIUM", label: "MEDIUM" },
+  { value: "HOT", label: "HOT" },
 ];
 
 const ManageQuiz = () => {
@@ -30,7 +32,7 @@ const ManageQuiz = () => {
       return;
     }
 
-    const res = await createQuiz(description, name, type?.value, image);
+    const res = await createQuiz(description, name, type.value, image);
     if (res && res.EC === 0) {
       toast.success(res.EM);
       setName("");
@@ -93,12 +95,24 @@ const ManageQuiz = () => {
                 </div>
               </fieldset>
             </div>
+            <div className="table-list my-1">
+              <TableQuiz />
+            </div>
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>Assigne quiz to user</Accordion.Header>
+          <Accordion.Body>
+            <AssignQuiz />
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>Update question to quiz</Accordion.Header>
+          <Accordion.Body>
+            <QuizQA />
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      <div className="table-list my-1">
-        <TableQuiz />
-      </div>
     </div>
   );
 };

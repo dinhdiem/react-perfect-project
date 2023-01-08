@@ -32,6 +32,12 @@ const Login = () => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      handleLogin();
+    }
+  };
+
   return (
     <>
       <div className="login-container mt-5">
@@ -55,6 +61,7 @@ const Login = () => {
               placeholder="Vui lòng nhập password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(event) => handleKeyDown(event)}
             />
           </div>
           <div className="d-flex justify-content-center">

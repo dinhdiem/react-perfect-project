@@ -56,9 +56,11 @@ const SidaBar = ({ image, collapsed, toggled, handleToggleSidebar }) => {
               Quản lý Users <Link to="/admin/manage-users" />
             </MenuItem>
             <MenuItem>
-              Quản lý Quiz <Link to="manage-quiz" />
+              Quản lý Quiz <Link to="/admin/manage-quiz" />
             </MenuItem>
-            <MenuItem>Quản lý Câu hỏi</MenuItem>
+            <MenuItem>
+              Quản lý Câu hỏi <Link to="/admin/manage-question" />
+            </MenuItem>
           </SubMenu>
         </Menu>
       </SidebarContent>

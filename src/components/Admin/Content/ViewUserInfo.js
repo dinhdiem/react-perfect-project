@@ -8,6 +8,7 @@ const ViewUserInfo = ({ show, setShow, dataUpdate, resetDataUpdate }) => {
   const [username, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [img, setImg] = useState("");
   const [role, setRole] = useState("USER");
   const [preview, setPreview] = useState("");
