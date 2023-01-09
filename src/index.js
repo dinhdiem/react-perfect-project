@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import DetailQuiz from "./components/User/detailQuiz";
 import Questions from "./components/Admin/Content/Question/Questions";
 import PrivateRouter from "./routes/PrivateRouter";
+import i18n from "./utils/i18n";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

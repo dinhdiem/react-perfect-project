@@ -7,10 +7,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { doLogout } from "../../redux/action/userAction";
 import { logout } from "../../services/apiService";
+import { useTranslation, Trans } from "react-i18next";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t, i18n } = useTranslation();
 
   const { isAuthenticate, refresh_token } = useSelector(
     (state) => state.user.account
@@ -33,6 +35,10 @@ const Header = () => {
     } else {
       toast.error(res.EM);
     }
+  };
+
+  const handleLanguge = (language) => {
+    i18n.changeLanguage(language);
   };
 
   return (
@@ -58,19 +64,31 @@ const Header = () => {
             {isAuthenticate === false ? (
               <>
                 <button className="btn-signin" onClick={handleLogin}>
-                  Sign in
+                  {t("login")}
                 </button>
                 <button className="btn-signup" onClick={handleRegister}>
-                  Sign up
+                  {t("register")}
                 </button>
               </>
             ) : (
-              <NavDropdown title="Setting" id="basic-nav-dropdown">
-                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                <NavDropdown.Item onClick={handleLogout}>
-                  Logout
-                </NavDropdown.Item>
-              </NavDropdown>
+              <>
+                <NavDropdown title={t("setting")} id="basic-nav-dropdown">
+                  <NavDropdown.Item href="/profile">
+                    {t("profile")}
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={handleLogout}>
+                    {t("logout")}
+                  </NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title={t("title")} id="basic-nav-dropdown">
+                  <NavDropdown.Item onClick={() => handleLanguge("en")}>
+                    Englist
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => handleLanguge("vi")}>
+                    Tiếng Việt
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </>
             )}
           </Nav>
         </Navbar.Collapse>
