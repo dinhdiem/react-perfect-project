@@ -7,7 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { doLogout } from "../../redux/action/userAction";
 import { logout } from "../../services/apiService";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
   const navigate = useNavigate();

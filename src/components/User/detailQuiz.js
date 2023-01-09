@@ -32,6 +32,8 @@ const DetailQuiz = () => {
             item.answers.isChecked = false;
             data.push(item.answers);
           });
+
+          data = _.orderBy(data, ["id"], ["asc"]);
           return { questionID: key, answers: data, description, image };
         })
         .value();
